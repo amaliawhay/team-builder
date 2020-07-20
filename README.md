@@ -7,7 +7,7 @@ This is a command line application that allows a user to create simple profiles 
 ## Table of Contents
 
 1. [Installation](##Installation)
-1. [Usage}](##Usage)
+1. [Usage](##Usage)
 1. [Contributing](##Contributing)
 1. [Tests](##Tests)
 1. [Questions](##Questions)
