@@ -4,15 +4,124 @@ const Intern = require("./lib/Intern");
 const inquirer = require("inquirer");
 const path = require("path");
 const fs = require("fs");
+const util = require('util');
+
+const asyncWriteFile = util.promisify(fs.writeFile);
+
+const employees = [];
 
 const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
 
-
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
+//Questions to be asked of all employee types
+function employeeQ() {
+  return inquirer.prompt([
+    {
+      type: "input",
+      name: "name",
+      message: "What is the full name of this employee?",
+    },
+    {
+      type: "input",
+      name: "id",
+      message: "What is the employee's ID number?",
+    },
+    {
+      type: "input",
+      name: "email",
+      message: "What is the employee's email address?",
+    },
+    {
+      type: "checkbox",
+      name: "role",
+      message:
+        "Which of the following roles does the employee have?",
+      choices: ["Engineer", "Manager", "Intern"],
+    },
+  ]);
+}
+
+//Question for Engineer
+function engineerQ() {
+  return inquirer.prompt([
+    {
+      type: "input",
+      name: "github",
+      message:
+        "Please enter the engineer's GitHub profile URL",
+    },
+  ]);
+}
+
+//Question for the manager
+function managerQ() {
+  return inquirer.prompt([
+    {
+      type: "input",
+      name: "officeNumber",
+      message: "What is the manager's office number?",
+    },
+  ]);
+}
+
+//Question for Intern
+function internQ() {
+  return inquirer.prompt([
+    {
+      type: "input",
+      name: "school",
+      message: "What school is the intern attending?",
+    },
+  ]);
+}
+
+//Inquirer asks questions
+async function ()
+
+employeeQ()
+  .then(function (ans) {
+    if (ans.role[0] === "Engineer") {
+      engineerQ().then(function (answer) {
+        const engineerObj = new Engineer(
+          ans.id,
+          ans.email,
+          ans.name,
+          answer.github
+        );
+        employees.push(engineerObj);
+      });
+    } else if (ans.role[0] === "Mangager") {
+      managerQ().then(function (res) {
+        const managerObj = new Manager(
+          ans.id,
+          ans.email,
+          ans.name,
+          res.officeNumber
+        );
+        employees.push(managerObj);
+      });
+    } else {
+      internQ().then(function (response) {
+        const internObj = new Intern(
+          ans.id,
+          ans.email,
+          ans.name,
+          response.school
+        );
+        employees.push(internObj);
+      });
+    }
+  })
+  .then(function () {
+    console.log(employees);
+  })
+  .catch(function (err) {
+    console.log(err);
+  });
 
 // After the user has input all employees desired, call the `render` function (required
 // above) and pass in an array containing all employee objects; the `render` function will
